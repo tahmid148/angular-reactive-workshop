@@ -27,12 +27,13 @@ export class ProjectsComponent implements OnInit {
     private projectsService: ProjectsService,
     private customerService: CustomersService,
     private ns: NotificationsService,
-    private store: Store<ProjectsState>) {
-      this.projects$ = store.pipe(
-        select('projects'),
-        map((projectsState: ProjectsState) => projectsState.projects)
-      )
-    }
+    private store: Store<ProjectsState>
+  ) {
+    this.projects$ = store.pipe(
+      select('projects'),
+      map((projectsState: ProjectsState) => projectsState.projects)
+    );
+  }
 
   ngOnInit() {
     this.getProjects();
@@ -69,30 +70,36 @@ export class ProjectsComponent implements OnInit {
   }
 
   createProject(project) {
-    this.projectsService.create(project)
-      .subscribe(response => {
-        this.ns.emit('Project created!');
-        this.getProjects();
-        this.resetCurrentProject();
-      });
+    this.store.dispatch({
+      type: 'create',
+      payload: project
+    });
+
+    // To be dealt with soon
+    this.ns.emit('Project created!');
+    this.resetCurrentProject();
   }
 
   updateProject(project) {
-    this.projectsService.update(project)
-      .subscribe(response => {
-        this.ns.emit('Project saved!');
-        this.getProjects();
-        this.resetCurrentProject();
-      });
+    this.store.dispatch({
+      type: 'update',
+      payload: project
+    });
+
+    // To be dealt with soon
+    this.ns.emit('Project saved!');
+    this.resetCurrentProject();
   }
 
   deleteProject(project) {
-    this.projectsService.delete(project)
-      .subscribe(response => {
-        this.ns.emit('Project deleted!');
-        this.getProjects();
-        this.resetCurrentProject();
-      });
+    this.store.dispatch({
+      type: 'delete',
+      payload: project
+    });
+
+    // To be dealt with soon
+    this.ns.emit('Project deleted!');
+    this.resetCurrentProject();
   }
 }
 
