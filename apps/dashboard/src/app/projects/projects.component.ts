@@ -29,7 +29,8 @@ export class ProjectsComponent implements OnInit {
     private ns: NotificationsService,
     private store: Store<ProjectsState>) {
       this.projects$ = store.pipe(
-        select('projects')
+        select('projects'),
+        map((projectsState: ProjectsState) => projectsState.projects)
       )
     }
 
