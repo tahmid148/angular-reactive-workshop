@@ -1,3 +1,4 @@
+import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 import { Project } from './../../projects/project.model';
 import { ProjectsActionsTypes } from './projects.actions';
 
@@ -35,35 +36,28 @@ const updateProject = (projects, project) => projects.map(p => {
 const deleteProject = (projects, project) => projects.filter(w => project.id !== w.id);
 
 // Step 1 - Define the shape of my state
-export interface ProjectsState {
-  projects: Project[];
+export interface ProjectsState extends EntityState<Project> {
   selectedProjectId: string | null;
 }
+export const adapter: EntityAdapter<Project> = createEntityAdapter<Project>();
 
 // Step 2 - Define initial state
-export const initialState: ProjectsState = {
+export const initialState: ProjectsState = adapter.getInitialState({
   projects: initialProjects,
   selectedProjectId: null
-}
+})
 
 // Step 3 - Build the reducer
 export function projectsReducer(state = initialState, action): ProjectsState {
   switch (action.type) {
+    case ProjectsActionsTypes.ProjectSelected:
+      return Object.assign({}, state, { selectedProjectId: action.payload });
     case ProjectsActionsTypes.AddProject:
-      return {
-        projects: createProject(state.projects, action.payload),
-        selectedProjectId: state.selectedProjectId
-      }
+      return adapter.addOne(action.payload, state);
     case ProjectsActionsTypes.UpdateProject:
-      return {
-        projects: updateProject(state.projects, action.payload),
-        selectedProjectId: state.selectedProjectId
-      }
+      return adapter.updateOne(action.payload, state);
     case ProjectsActionsTypes.DeleteProject:
-      return {
-        projects: deleteProject(state.projects, action.payload),
-        selectedProjectId: state.selectedProjectId
-      }
+      return adapter.removeOne(action.payload, state);
     default:
       return state;
   }
