@@ -57,7 +57,8 @@ export class ProjectsComponent implements OnInit {
   }
 
   getProjects() {
-    this.store.dispatch(new LoadProjects(initialProjects));
+    console.log('get projects')
+    this.store.dispatch(new LoadProjects());
   }
 
   saveProject(project) {
