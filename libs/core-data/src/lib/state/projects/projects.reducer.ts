@@ -43,7 +43,6 @@ export const adapter: EntityAdapter<Project> = createEntityAdapter<Project>();
 
 // Step 2 - Define initial state
 export const initialState: ProjectsState = adapter.getInitialState({
-  projects: [],
   selectedProjectId: null
 })
 
@@ -64,3 +63,12 @@ export function projectsReducer(state = initialState, action): ProjectsState {
       return state;
   }
 }
+
+// Selectors
+export const getSelectedProjectId = (state: ProjectsState): string | null => state.selectedProjectId;
+
+const {selectIds, selectEntities, selectAll} = adapter.getSelectors();
+
+export const selectProjectIds = selectIds;
+export const selectProjectEntities = selectEntities;
+export const selectAllProjects = selectAll;
