@@ -13,7 +13,7 @@ export enum ProjectsActionsTypes {
 
 export class SelectProject implements Action {
   readonly type: string = ProjectsActionsTypes.ProjectSelected;
-  constructor(public payload: Project) {}
+  constructor(public payload: string) {}
 }
 
 export class LoadProjects implements Action {

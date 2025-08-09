@@ -23,6 +23,10 @@ export const selectProjectIds = createSelector(selectProjectState, fromProjects.
 export const selectProjectEntities = createSelector(selectProjectState, fromProjects.selectProjectEntities);
 export const selectAllProjects = createSelector(selectProjectState, fromProjects.selectAllProjects);
 
+export const selectCurrentProjectId = createSelector(selectProjectState, fromProjects.getSelectedProjectId);
+
+export const selectCurrentProject = createSelector(selectProjectEntities, selectCurrentProjectId,
+  (projectEntities, currentProjectId) => projectEntities[currentProjectId]);
 
 // -------------------------------------------------------------------
 // CUSTOMERS SELECTORS
