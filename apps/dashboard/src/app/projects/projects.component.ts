@@ -2,6 +2,7 @@ import { Observable } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { Customer, Project, ProjectsService, NotificationsService, CustomersService, ProjectsState, AddProject, UpdateProject, DeleteProject, LoadProjects, selectAllProjects, selectCurrentProject, SelectProject } from '@workshop/core-data';
 import { select, Store } from '@ngrx/store';
+import { ProjectsFacade } from 'libs/core-data/src/lib/state/projects/projects.facade';
 
 const emptyProject: Project = {
   id: null,
@@ -25,16 +26,12 @@ export class ProjectsComponent implements OnInit {
 
   constructor(
     private projectsService: ProjectsService,
+    private projectsFacade: ProjectsFacade,
     private customerService: CustomersService,
     private ns: NotificationsService,
-    private store: Store<ProjectsState>
   ) {
-    this.projects$ = store.pipe(
-      select(selectAllProjects),
-    );
-    this.currentProject$ = store.pipe(
-      select(selectCurrentProject)
-    );
+    this.projects$ = projectsFacade.allProjects$
+    this.currentProject$ = projectsFacade.currentProject$;
   }
 
   ngOnInit() {
@@ -44,11 +41,11 @@ export class ProjectsComponent implements OnInit {
   }
 
   resetCurrentProject() {
-    this.store.dispatch(new SelectProject(null));
+    this.projectsFacade.selectProject(null);
   }
 
   selectProject(project: Project) {
-    this.store.dispatch(new SelectProject(project.id));
+    this.projectsFacade.selectProject(project.id);
   }
 
   cancel(project) {
@@ -60,7 +57,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   getProjects() {
-    this.store.dispatch(new LoadProjects());
+    this.projectsFacade.loadAll();
   }
 
   saveProject(project) {
@@ -72,7 +69,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   createProject(project) {
-    this.store.dispatch(new AddProject(project))
+    this.projectsFacade.createProject(project);
 
     // To be dealt with soon
     this.ns.emit('Project created!');
@@ -80,7 +77,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   updateProject(project) {
-    this.store.dispatch(new UpdateProject(project))
+    this.projectsFacade.updateProject(project);
 
     // To be dealt with soon
     this.ns.emit('Project saved!');
@@ -88,7 +85,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   deleteProject(project) {
-    this.store.dispatch(new DeleteProject(project));
+    this.projectsFacade.deleteProject(project);
 
     // To be dealt with soon
     this.ns.emit('Project deleted!');
